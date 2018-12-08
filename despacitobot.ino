@@ -10,8 +10,10 @@
   http://www.arduino.cc/en/Tutorial/Tone
 */
 #include "pitches.h"
+#include <Servo.h>  
 int writeValue;
 int readValue;
+Servo servo1;
 // notes in the melody:
 
 
@@ -22,19 +24,21 @@ int eighth = whole/8;
 int sixteenth = whole / 16;
 int triplet = quarter / 3;
 int motorPin = 9;
+int servoPin = 11;
 void setup() {
-  // initialize the pushbutton pin as an input:
   Serial.begin(9600);
   pinMode(3, INPUT);
   pinMode(motorPin, OUTPUT);  // set up the pin as an OUTPUT
+  servo1.attach(servoPin, 900, 2100);  //Connect the servo to pin 9
 }
 
 void loop() {
 
+  int buttonPressed = digitalRead(3);  // keypad pin 3
 
   if(buttonPressed){playDespacito();}
-  //if (buttonPressed){moveMotor();}
 }
+
 
 void playNote(int note, int duration, boolean isRepeated = false){\
   // isrepeated will play the note for less time, but insert a break before the next note so that you can tell two of the same notes played sequentially are different notes.
@@ -51,19 +55,24 @@ void playNote(int note, int duration, boolean isRepeated = false){\
 
 
 void playDespacito(){
-    digitalWrite(motorPin, HIGH);
- // The variable names correspond to the keys on the keypad:
-  int buttonPressed = digitalRead(3);  // keypad pin 3
+   servo1.write(0);    // Tell servo to go to 90 degrees
   playNote(NOTE_D6, half);
   playNote(NOTE_CS6, half);
   // Measure one
+  servo1.write(90);    // Tell servo to go to 90 degrees
+  //  digitalWrite(motorPin, HIGH);
   playNote(NOTE_B6,quarter);
   playNote(NOTE_FS5, quarter);
+  servo1.write(0);    // Tell servo to go to 90 degrees
+  playNote(NOTE_FS5, eighth, true);
+
   playNote(NOTE_FS5, eighth, true);
   playNote(NOTE_FS5, eighth, true);
-  playNote(NOTE_FS5, eighth, true);
+  
+ 
   playNote(NOTE_FS5, eighth, true);
   //measure two 
+
   playNote(NOTE_FS5, eighth);
   playNote(NOTE_B6, eighth, true);
   playNote(NOTE_B6, eighth, true);
@@ -80,7 +89,7 @@ void playDespacito(){
   playNote(NOTE_G5, eighth, true);
   playNote(NOTE_G5, eighth, true);
 
-  //measure 4
+  //measure 
   playNote(NOTE_G5, eighth);
   playNote(NOTE_B6, eighth, true);
   playNote(NOTE_B6, eighth, true);
@@ -109,7 +118,9 @@ void playDespacito(){
   //measure 7
   playNote(NOTE_E6, eighth);
   playNote(NOTE_CS6, eighth+quarter);
+  digitalWrite(motorPin, LOW);
   delay(half);
+      
   
 }
 
