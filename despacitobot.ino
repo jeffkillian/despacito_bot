@@ -16,27 +16,31 @@ int readValue;
 Servo servo1;
 // notes in the melody:
 
+  int beginPos = 35;
+  int endPos = 100;
 
-int whole = 1200;
+
+
+int whole = 2*670;
 int half = whole/2;
 int quarter = whole/4;
 int eighth = whole/8;
 int sixteenth = whole / 16;
 int triplet = quarter / 3;
-int motorPin = 9;
 int servoPin = 11;
+int servoPos = 0;
 void setup() {
   Serial.begin(9600);
   pinMode(3, INPUT);
-  pinMode(motorPin, OUTPUT);  // set up the pin as an OUTPUT
+//  pinMode(motorPin, OUTPUT);  // set up the pin as an OUTPUT
   servo1.attach(servoPin, 900, 2100);  //Connect the servo to pin 9
+  servo1.write(beginPos);    // Tell servo to go to beginning position
 }
 
 void loop() {
-
   int buttonPressed = digitalRead(3);  // keypad pin 3
 
-  if(buttonPressed){playDespacito();}
+  if(buttonPressed){playBeat();}
 }
 
 
@@ -53,72 +57,111 @@ void playNote(int note, int duration, boolean isRepeated = false){\
   }
 }
 
+void playBeat(){
+  if (servoPos == beginPos) {
+    servoPos = endPos;
+  }
+  else {
+    servoPos = beginPos;
+  }
+  servo1.write(servoPos);    // Tell servo to go to 90 degrees
+  delay(400);
+}
+
 
 void playDespacito(){
-   servo1.write(0);    // Tell servo to go to 90 degrees
+   
+  // each measure is 16, beats are on 1, 6, 11
+
   playNote(NOTE_D6, half);
   playNote(NOTE_CS6, half);
   // Measure one
-  servo1.write(90);    // Tell servo to go to 90 degrees
-  //  digitalWrite(motorPin, HIGH);
+  playBeat();
   playNote(NOTE_B6,quarter);
-  playNote(NOTE_FS5, quarter);
-  servo1.write(0);    // Tell servo to go to 90 degrees
-  playNote(NOTE_FS5, eighth, true);
-
-  playNote(NOTE_FS5, eighth, true);
-  playNote(NOTE_FS5, eighth, true);
+  playBeat();
+  playNote(NOTE_FS5,  eighth);
   
+  playNote(NOTE_FS5,  eighth, true);
  
   playNote(NOTE_FS5, eighth, true);
-  //measure two 
+  playBeat();
+  playNote(NOTE_FS5, sixteenth);
+  
+  playNote(NOTE_FS5, sixteenth, true);
+  playNote(NOTE_FS5, eighth, true);
 
+  playNote(NOTE_FS5, eighth, true);
+  
+  
+  //measure two 
+  playBeat();
   playNote(NOTE_FS5, eighth);
   playNote(NOTE_B6, eighth, true);
   playNote(NOTE_B6, eighth, true);
+  playBeat();
   playNote(NOTE_A6, eighth);
-  playNote(NOTE_B6, quarter);
+  playNote(NOTE_B6, eighth+sixteenth);
+  playBeat();
+  playNote(NOTE_B6, sixteenth);
   playNote(NOTE_A6, eighth);
   playNote(NOTE_B6, eighth);
 
   //measure three
+  playBeat();
   playNote(NOTE_B6, eighth);
-  playNote(NOTE_G5, quarter+eighth);
+  playNote(NOTE_G5, quarter);
+  playBeat();
+  playNote(NOTE_G5, eighth);
   playNote(NOTE_G5, eighth, true);
-  playNote(NOTE_G5, eighth, true);
+  playNote(NOTE_G5, sixteenth);
+  playBeat();
+  playNote(NOTE_G5, sixteenth, true);
   playNote(NOTE_G5, eighth, true);
   playNote(NOTE_G5, eighth, true);
 
   //measure 
+  playBeat();
   playNote(NOTE_G5, eighth);
   playNote(NOTE_B6, eighth, true);
   playNote(NOTE_B6, eighth, true);
+   playBeat();
   playNote(NOTE_B6, eighth, true);
-  playNote(NOTE_B6, quarter);
+  playNote(NOTE_B6, eighth+sixteenth);
+  playBeat();
+  playNote(NOTE_B6, sixteenth);
   playNote(NOTE_CS6, eighth);
   playNote(NOTE_D6, eighth);
 
   // measure 5
+  playBeat();
   playNote(NOTE_D6, eighth);
-  playNote(NOTE_A6, eighth+quarter);
+  playNote(NOTE_A6, quarter);
+  playBeat();
+  playNote(NOTE_A6, eighth);
   playNote(NOTE_A6, eighth, true);
-  playNote(NOTE_A6, eighth, true);
+  playNote(NOTE_A6, sixteenth);
+  playBeat();
+  playNote(NOTE_A6, sixteenth, true);
   playNote(NOTE_A6, eighth, true);
   playNote(NOTE_A6, eighth, true);
 
   //measure 6
+  playBeat();
   playNote(NOTE_A6, eighth, true);
   playNote(NOTE_D6, eighth, true);
   playNote(NOTE_D6, eighth, true);
+  playBeat();
   playNote(NOTE_D6, eighth, true);
-  playNote(NOTE_D6, quarter);
+  playNote(NOTE_D6, eighth+sixteenth);
+  playBeat();
+  playNote(NOTE_D6, sixteenth);
   playNote(NOTE_E6, eighth, true);
   playNote(NOTE_E6, eighth);
 
   //measure 7
+  playBeat();
   playNote(NOTE_E6, eighth);
   playNote(NOTE_CS6, eighth+quarter);
-  digitalWrite(motorPin, LOW);
   delay(half);
       
   
