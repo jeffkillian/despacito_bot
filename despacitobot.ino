@@ -16,8 +16,8 @@ int readValue;
 Servo servo1;
 // notes in the melody:
 
-  int beginPos = 35;
-  int endPos = 100;
+  int beginPos = 20;
+  int endPos = beginPos+80;
 
 
 
@@ -29,6 +29,7 @@ int sixteenth = whole / 16;
 int triplet = quarter / 3;
 int servoPin = 11;
 int servoPos = 0;
+boolean hasReset = true; // Allow you to move it back to starting position
 void setup() {
   Serial.begin(9600);
   pinMode(3, INPUT);
@@ -39,8 +40,16 @@ void setup() {
 
 void loop() {
   int buttonPressed = digitalRead(3);  // keypad pin 3
+  if (buttonPressed) {
+    if (hasReset){
+      playDespacito();
+    }else{
+      hasReset = true;
+      servo1.write(beginPos);
+      delay(1000);
+    }
+  }
 
-  if(buttonPressed){playBeat();}
 }
 
 
@@ -57,15 +66,22 @@ void playNote(int note, int duration, boolean isRepeated = false){\
   }
 }
 
-void playBeat(){
-  if (servoPos == beginPos) {
+void playBeat(boolean goHard = false){
+
+  if (servoPos < endPos) {
     servoPos = endPos;
+    if (goHard){
+      servoPos = 155;
+    }
   }
   else {
     servoPos = beginPos;
+    if (goHard){
+      servoPos = 0;
+    }
   }
   servo1.write(servoPos);    // Tell servo to go to 90 degrees
-  delay(400);
+  //delay(400);
 }
 
 
@@ -150,20 +166,20 @@ void playDespacito(){
   playNote(NOTE_A6, eighth, true);
   playNote(NOTE_D6, eighth, true);
   playNote(NOTE_D6, eighth, true);
-  playBeat();
+  playBeat(true);
   playNote(NOTE_D6, eighth, true);
   playNote(NOTE_D6, eighth+sixteenth);
-  playBeat();
+  playBeat(true);
   playNote(NOTE_D6, sixteenth);
   playNote(NOTE_E6, eighth, true);
   playNote(NOTE_E6, eighth);
 
   //measure 7
-  playBeat();
+  playBeat(true);
   playNote(NOTE_E6, eighth);
   playNote(NOTE_CS6, eighth+quarter);
   delay(half);
-      
+  hasReset = false;
   
 }
 
